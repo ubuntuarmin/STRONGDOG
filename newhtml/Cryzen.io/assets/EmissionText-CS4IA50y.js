@@ -1,0 +1,1 @@
+import{_ as o,o as c,c as _,e,t as s}from"./index-BszMCtG6.js";const a={class:"emission-wrapper"},n={class:"text"},i={class:"blured-text"},r={__name:"EmissionText",props:["text"],setup(t){return(p,d)=>(c(),_("div",a,[e("div",n,s(t.text),1),e("div",i,s(t.text),1)]))}},x=o(r,[["__scopeId","data-v-e830e523"]]);export{x as _};

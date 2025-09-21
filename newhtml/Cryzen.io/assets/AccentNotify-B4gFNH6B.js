@@ -1,0 +1,1 @@
+import{_ as o,o as e,c as t}from"./index-BszMCtG6.js";const s={key:0,class:"accent-notify"},n={key:1,class:"notify-rewards"},_={__name:"AccentNotify",props:{type:{type:String,default:"circle"}},setup(c){return(a,r)=>c.type==="exclamation"?(e(),t("div",s,"!")):(e(),t("div",n))}},p=o(_,[["__scopeId","data-v-c68b72be"]]);export{p as _};
