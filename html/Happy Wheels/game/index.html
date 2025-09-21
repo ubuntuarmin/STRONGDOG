@@ -1,82 +1,187 @@
-<html>
+<!DOCTYPE html>
+
 <head>
-<title>Happy Wheels HTML5 - Levan Kipshidze</title>
+	<meta charset="utf-8">
     <meta http-equiv="content-type" content="text/html; charset=UTF8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="#382C2A">
+	<meta name="viewport"
+		content="height=device-height, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui" />
+	<title>Happy Wheels</title>
 
-    <style>
-        body {
-            overflow: hidden;
-            background-color: black;
-        }
-        /* width */
-        ::-webkit-scrollbar {
-            width: 10px;
-        }
+	<script type="text/javascript" src="//game-cdn.poki.com/scripts/v2/poki-sdk.js"></script>
+	<script type="text/javascript" src="./js/loader.js"></script>
+	<style>
+		* {
+			margin: 0;
+			padding: 0;
+		}
 
-        /* Track */
-        ::-webkit-scrollbar-track {
-            background: ¦666666; 
-        }
-        
-        /* Handle */
-        ::-webkit-scrollbar-thumb {
-            background: ¦CCCCCC; 
-        }
+		canvas {
+			outline: none
+		}
 
-        /* Handle on hover */
-        ::-webkit-scrollbar-thumb:hover {
-            background: ¦CCCCCC; 
-        }
+		html,
+		body,
+		#container {
+			margin: 0;
+			overflow: hidden;
+			width: 100%;
+			height: 100%;
+			background-color: white;
+			-webkit-tap-highlight-color: transparent;
+			-webkit-touch-callout: none;
+			-webkit-user-select: none;
+			-khtml-user-select: none;
+			-moz-user-select: none;
+			-ms-user-select: none;
+			user-select: none;
+		}
 
-        /* stupid firefox */
-        html {scrollbar-color: ¦CCCCCC ¦666666; scrollbar-width: thin; background-color: black;}
-    </style>
+		#splash {
+			position: absolute;
+			visibility: hidden;
+			z-index: 10;
+		}
 
+		#splash__image {
+			position: absolute;
+			background-size: cover;
+			background-position: center;
+			background-repeat: no-repeat;
+			background-image: url("assets/todo.jpg");
+			visibility: visible;
+			z-index: 10;
+		}
+
+		#progress__root {
+			position: absolute;
+		}
+
+		#progress__line {
+			width: 0;
+			height: 100%;
+			transition: all 0.5s;
+		}
+		#loading__image {
+			position: absolute;
+			background-size: contain;
+			background-position: center;
+			background-repeat: no-repeat;
+		}
+	</style>
 </head>
-<body oncontextmenu="return false;">
-    <script>
-        function report_loading_issue() {
-            var el = document.createElement("img");
-            el.src = "/DEBUG2/wrong-ref.png?wl=" + window.location + "&wpl=" + window.parent.location + "&wlh=" + window.location.host + "&wplh=" + window.parent.location.host;
-            el.style.position = "absolute";
-            el.style.left = "-9999px";
-            el.style.top = "-9999px";
-            document.body.appendChild(el);
-        }
-		const pathToMyURL = 'https://www-sites-opensocial.googleusercontent.com/gadgets/proxy/refresh=3600&container=enterprise/https://totaljerkface.com/get_level.hw';
-		
 
-        (function() {
-            window["HW_SETTINGS"] = {};
-            if(!(window.location != window.parent.location && window.location.host === "totaljerkface.com" && window.parent.location.host === "totaljerkface.com")) {
-            }
+<body>
+	<div id="splash__image">
+		<div id="progress__root">
+			<div id="progress__line"></div>
+		</div>
+		<div id="loading__image"></div>
+	</div>
+
+	<script>
+
+		window.addEventListener("load", () => {
 
 
-            var d_el = document.createElement("script");
+
+			PokiSDK.init().then(
+				() => {
+					// successfully initialized
+					onPokiInitComplete(false);
+				}
+			).catch(
+				() => {
+					// successfully initialized but the user has adblock
+					onPokiInitComplete(true);
+				}
+			);
+
+			let config;
+
 			
-            d_el.src = "js/dependencies.ac8072eb8a22557c1b4828699b35bec7.js";
-            d_el.onload = function() {
-                var i_el = document.createElement("script");
-                i_el.src = "js/index.js";
-                // i_el.integrity = "sha384-GKAptyGydgK2fCaxFPGnAip+60TiYdFsB22A5ax8TB2dqT8ockqX1XI1rsr6fJIH";
-                i_el.onload = function() {
-                    document.getElementById("loading-indicator").remove();
-                }
+config = {
+    "key": "Happy Wheels",
+    "title": "Happy Wheels",
+    "filename": "HappyWheels_Unpacked_sdk",
+    "pokiSDK": true,
+    "debugPoki": true,
+    "showFPS": false,
+    "debug": false,
+    "splash": "assets/todo.jpg",
+    "start": null,
+    "width": 500,
+    "height": 374,
+    "x": 0,
+    "y": 0,
+    "w": "100%",
+    "h": "100%",
+    "stageScaleMode": null,
+    "stageAlign": null,
+    "progressParserWeigth": 0.5,
+    "progress": {
+        "direction": "lr",
+        "back": "#fff",
+        "line": "#a24f17",
+        "rect": [
+            0.1,
+            0.85,
+            0.8,
+            0.025
+        ]
+    },
+    "skipFramesOfScene": null,
+    "buttonPokiSDKActions": null,
+    "retryButtonIDS": null,
+    "retryButtonAction": null,
+    "actionOnStop": null,
+    "actionWhenRetryButtonEncountered": null,
+    "debugpoki": false,
+    "filenameNoSdk": "HappyWheels_Unpacked",
+    "binary": [
+        {
+            "name": "fonts.swf",
+            "path": "assets/fonts.swf",
+            "size": 30506
+        },
+        {
+            "name": "HappyWheels_Unpacked_sdk",
+            "path": "assets/HappyWheels_Unpacked_sdk.swf",
+            "size": 5250866,
+            "resourceType": "GAME"
+        }
+    ],
+    "runtime": "js/Main.js"
+};
 
-                document.body.appendChild(i_el);
-            }
-            document.body.appendChild(d_el);
-        })();
-    </script>
+			
+			PokiSDK.setDebug(config.debugPoki);
 
-    <div id="og-game-holder">
-        <p style="color:white" id="loading-indicator">Loading...</p>
-    </div>
-	
-		
+			Loader.init(config);
+
+			let onPokiInitComplete = (adBlocked) => {
+
+				PokiSDK.adBlocked = adBlocked;
+				PokiSDK.gameLoadingStart();
+
+				Loader.runGame((fill) => {
+					PokiSDK.gameLoadingProgress({
+						percentageDone: fill,
+						kbLoaded: 0,
+						kbTotal: 0,
+						fileNameLoaded: "",
+						filesLoaded: 0,
+						filesTotal: 0
+					});
+				}, (instance) => {
+					PokiSDK.gameLoadingFinished();
+				})
+			}
+		})
+
+	</script>
 </body>
+
 </html>
