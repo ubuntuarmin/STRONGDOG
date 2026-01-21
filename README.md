@@ -1,5 +1,5 @@
 # Strongdog
-#### The official repo for strongdog, the best game site ever!
+#### NON OFFICAL
 ----
 
 ## Links
