@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>StrongDog XP – All Games</title>
+    <title>StrongDog XP – All Local Games</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <style>
       body {
@@ -112,13 +112,6 @@
         background-color: #202124;
         color: #e0e0e0;
       }
-
-      @media (max-width: 600px) {
-        .header {
-          flex-direction: column;
-          align-items: flex-start;
-        }
-      }
     </style>
   </head>
   <body>
@@ -130,11 +123,11 @@
     </div>
 
     <div class="main">
-      <h1>All Games</h1>
+      <h1>All Local Games</h1>
       <p>
-        This hub lists every game defined in <code>cards-data.js</code>. Click a
-        card to play – games can be hosted locally in this repo or on upstream
-        StrongDog sites.
+        This hub lists every game defined in <code>games-local.js</code>. Each
+        game lives in <code>/html/&lt;Game Name&gt;/index.html</code> and uses a
+        <code>game/</code> subfolder for its files.
       </p>
 
       <div class="filters">
@@ -151,6 +144,6 @@
       <div class="card-container" id="cardContainer"></div>
     </div>
 
-    <script type="module" src="./games-index.js"></script>
+    <script type="module" src="./games-local.js"></script>
   </body>
 </html>
