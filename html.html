@@ -1,14 +1,18 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-0YLTCV2MMS"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-0YLTCV2MMS');
-</script>
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-0YLTCV2MMS"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+      gtag("config", "G-0YLTCV2MMS");
+    </script>
     <title>foldername - StrongDog XP</title>
     <style>
       body {
@@ -46,23 +50,6 @@
 
       .header-logo:hover span:nth-child(1) {
         color: #e0e0e0;
-      }
-
-      .nav-links {
-        display: flex;
-        gap: 30px;
-      }
-
-      .nav-links a {
-        color: #e0e0e0;
-        text-decoration: none;
-        font-size: 18px;
-        font-weight: bold;
-        transition: color 0.3s;
-      }
-
-      .nav-links a:hover {
-        color: #ff8c00;
       }
 
       .content {
@@ -245,6 +232,7 @@
       </div>
     </div>
 
+    <!-- Game embed -->
     <script>
       document.addEventListener("DOMContentLoaded", function () {
         var fullscreenButton = document.getElementById("fullscreenButton");
@@ -257,8 +245,10 @@
           gameContainer.innerHTML = "";
           gameContainer.appendChild(iframe);
           gameTitle.textContent = title;
+          document.title = title + " - StrongDog XP";
         }
 
+        // TEMPLATE DEFAULT – change "foldername" when you copy this
         embedGame("./game/index.html", "foldername");
 
         fullscreenButton.addEventListener("click", function () {
@@ -273,26 +263,35 @@
       });
     </script>
 
+    <!-- Favorites (uses strongdog.webp as default icon) -->
     <script>
       document.addEventListener("DOMContentLoaded", function () {
         const favoriteIcon = document.getElementById("favoriteIcon");
-        const gameTitle = document.getElementById("gameTitle").textContent;
+        const gameTitleElement = document.getElementById("gameTitle");
+
+        function getGameTitle() {
+          const t = gameTitleElement.textContent.trim();
+          return t || "foldername";
+        }
 
         function toggleFavorite() {
+          const title = getGameTitle();
           let favorites = JSON.parse(localStorage.getItem("favorites") || "{}");
-          const imagePath = "./img/" + gameTitle + ".jpg";
 
-          if (favorites[gameTitle]) {
-            delete favorites[gameTitle];
+          // Use one shared icon; change to per-game if you want
+          const imagePath = "./img/strongdog.webp";
+
+          if (favorites[title]) {
+            delete favorites[title];
           } else {
-            favorites[gameTitle] = {
-              path: `./html/${gameTitle}/index.html`,
+            favorites[title] = {
+              path: `./html/${title}/index.html`,
               image: imagePath,
             };
           }
 
           localStorage.setItem("favorites", JSON.stringify(favorites));
-          updateFavoriteIcon(favorites, gameTitle);
+          updateFavoriteIcon(favorites, title);
         }
 
         function updateFavoriteIcon(favorites, title) {
@@ -304,7 +303,7 @@
         }
 
         const favorites = JSON.parse(localStorage.getItem("favorites") || "{}");
-        updateFavoriteIcon(favorites, gameTitle);
+        updateFavoriteIcon(favorites, getGameTitle());
 
         favoriteIcon.addEventListener("click", function () {
           toggleFavorite();
@@ -312,10 +311,11 @@
       });
     </script>
 
+    <!-- Apps Script logging -->
     <script>
       window.onload = function () {
         var titleElement = document.getElementById("gameTitle");
-        var title = titleElement.textContent;
+        var title = titleElement.textContent.trim() || "foldername";
 
         fetch(
           "https://script.google.com/macros/s/AKfycbx1xYwL2QqkOQHyeCWIVSMVLP_XXts5zpb0M-vbvlRl1MpRYYcv4NI-i8OaGc0YP0wpsg/exec?title=" +
@@ -329,120 +329,46 @@
           .catch((error) => console.error("Error:", error));
       };
     </script>
-<script type="module">
-  import games from "../../cards-data.js";
-  import { siteMapping } from "../../site-mapping.js";
 
-  document.addEventListener("DOMContentLoaded", function () {
-    const cardContainer = document.getElementById("cardContainer");
+    <!-- Recommended games (simple relative paths, no siteMapping) -->
+    <script type="module">
+      import games from "../../cards-data.js";
 
-    // Function to get the Page 1 host and protocol based on current host
-    function getPage1HostAndProtocol() {
-      const currentHost = window.location.hostname;
+      document.addEventListener("DOMContentLoaded", function () {
+        const cardContainer = document.getElementById("cardContainer");
 
-      // Iterate over the siteMapping to find the current host as a value
-      for (const [page1Host, page2URL] of Object.entries(siteMapping)) {
-        try {
-          const page2URLObj = new URL(page2URL);
-          const page2Host = page2URLObj.hostname;
-          const protocol = page2URLObj.protocol; // e.g., 'http:' or 'https:'
-
-          if (page2Host === currentHost) {
-            return { page1Host, protocol };
-          }
-        } catch (error) {
-          console.error(`Invalid URL in siteMapping: ${page2URL}`, error);
+        function normalizePath(path) {
+          return path.replace(/^\.\//, "").replace(/^\//, "");
         }
-      }
-      return null;
-    }
 
-    function adjustHrefPath(path, page) {
-      // Remove leading './' or '/' from the path
-      path = path.replace(/^\.\//, "").replace(/^\//, "");
+        function getCardHTML(gameObject) {
+          const { href, imgSrc, name } = gameObject;
 
-      if (page === undefined || page != 2) {
-        // For Page 1 games
-        const page1Info = getPage1HostAndProtocol();
-        if (page1Info) {
-          const { page1Host, protocol } = page1Info;
-          const adjustedFirstPageLink =
-            protocol + "//" + page1Host.replace(/\/$/, "");
-          const adjustedPath = "/" + path;
-          return adjustedFirstPageLink + adjustedPath;
-        } else {
-          // If currentHost not found in siteMapping values, log an error
-          console.error(
-            `Current host not found in siteMapping values. Unable to adjust href for Page 1 game.`
-          );
-          return "#"; // Fallback href
+          const adjustedHref = "../../" + normalizePath(href);
+          const adjustedImgSrc = "../../" + normalizePath(imgSrc);
+
+          const card = document.createElement("a");
+          card.className = "card";
+          card.href = adjustedHref;
+
+          const img = document.createElement("img");
+          img.src = adjustedImgSrc;
+          img.alt = name;
+          card.appendChild(img);
+
+          const figcaption = document.createElement("figcaption");
+          figcaption.textContent = name;
+          card.appendChild(figcaption);
+
+          return card;
         }
-      } else {
-        // For Page 2 games, adjust the path to go back two directories
-        return "../../" + path;
-      }
-    }
 
-    function adjustImgPath(path, page) {
-      // Remove leading './', '/', or 'img/' from the path
-      path = path
-        .replace(/^\.\//, "")
-        .replace(/^\//, "")
-        .replace(/^img\//, "");
-
-      if (page === undefined || page != 2) {
-        // For Page 1 games, get image from the first page link
-        const page1Info = getPage1HostAndProtocol();
-        if (page1Info) {
-          const { page1Host, protocol } = page1Info;
-          const adjustedFirstPageLink =
-            protocol + "//" + page1Host.replace(/\/$/, "");
-          const adjustedPath = "/img/" + path;
-          return adjustedFirstPageLink + adjustedPath;
-        } else {
-          // If currentHost not found in siteMapping values, log an error
-          console.error(
-            `Current host not found in siteMapping values. Unable to adjust image path for Page 1 game.`
-          );
-          return "../../img/" + path; // Fallback to local image
-        }
-      } else {
-        // For Page 2 games, adjust the path to go back two directories
-        return "../../img/" + path;
-      }
-    }
-
-    function getCardHTML(gameObject) {
-      const { href, imgSrc, name, page } = gameObject;
-
-      // Adjust the href and imgSrc paths
-      const adjustedHref = adjustHrefPath(href, page);
-      const adjustedImgSrc = adjustImgPath(imgSrc, page);
-
-      // Create the card element
-      const card = document.createElement("a");
-      card.className = "card";
-      card.href = adjustedHref;
-
-      const img = document.createElement("img");
-      img.src = adjustedImgSrc;
-      img.alt = name;
-      card.appendChild(img);
-
-      const figcaption = document.createElement("figcaption");
-      figcaption.textContent = name;
-      card.appendChild(figcaption);
-
-      return card;
-    }
-
-    // Generate and display random recommended games
-    const randomGames = games.sort(() => 0.5 - Math.random()).slice(0, 10);
-    randomGames.forEach((game) => {
-      const card = getCardHTML(game);
-      cardContainer.appendChild(card);
-    });
-  });
-</script>
+        const randomGames = games.sort(() => 0.5 - Math.random()).slice(0, 10);
+        randomGames.forEach((game) => {
+          const card = getCardHTML(game);
+          cardContainer.appendChild(card);
+        });
+      });
+    </script>
   </body>
 </html>
